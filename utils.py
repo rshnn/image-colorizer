@@ -3,6 +3,40 @@ import cv2
 import os
 
 
+
+def img_to_dataset(img, window_size=10, squeeze=True): 
+    """
+    Returns X, y for an input image.  Considers input window_size.  
+      The dimensions + padding size are not considered in this function.   User beware.  
+
+    Parameters: img (utils.Image)  
+                window_size (int)
+    
+    Return:  X (np.array) of dim (N, window_size, window_size) or (N, window_size**2)     
+             y (np.array) (BGR) of dim (N, 3)
+
+    """
+
+    X = list()
+    y = list() 
+
+    for i in range(100): 
+        for j in range(100): 
+            
+            i_ = i + img.padding
+            j_ = j + img.padding
+            
+            grays, b, g, r = img.get_dataset_for_pixel(i_, j_, window_size=window_size, squeeze=squeeze)
+            X.append(grays)
+            y.append((b, g, r))
+            
+            
+    X = np.array(X)
+    y = np.array(y)
+
+    return X, y 
+
+
 def reconstruct_from_vectors(blue, green, red, dimension=110):
     """ Reconstructs colored image form blue green and red channels. 
          Dimension arg is the dimension of the photograph.  Default is 110x100
@@ -72,7 +106,8 @@ class Image():
         if debug: print('Read in file {}.'.format(fullpath))
         self.original = self.data 
         self.data = cv2.resize(self.data, (resize, resize), interpolation = cv2.INTER_AREA)
-        
+        self.dim = resize 
+
         self.data_nopadding = self.data 
         self.gray_nopadding = self.convert_gray_nb()  
 
@@ -130,7 +165,7 @@ class Image():
 
 
     
-    def get_dataset_for_pixel(self, i, j, window_size=10): 
+    def get_dataset_for_pixel(self, i, j, window_size=10, squeeze=True): 
         """ Returns gray values for a window around the target pixel at location 
             i, j.  The window_size will be rounded.  
             e.g window size of 11 --> 5 pixels to left, right, up and down of target 
@@ -155,32 +190,15 @@ class Image():
 
         b, g, r = self.data[i, j]
 
-
-        #  This grabs the RGB values for the window.  
-        # b = self.data[target_idx[0]-zeta:target_idx[0]+zeta+1, 
-        #              target_idx[1]-zeta:target_idx[1]+zeta+1, 
-        #              0]
-
-        # g = self.data[target_idx[0]-zeta:target_idx[0]+zeta+1, 
-        #              target_idx[1]-zeta:target_idx[1]+zeta+1, 
-        #              1]
-
-        # r = self.data[target_idx[0]-zeta:target_idx[0]+zeta+1, 
-        #              target_idx[1]-zeta:target_idx[1]+zeta+1, 
-        #              2]
-        # blue = b.reshape(-1, 1).squeeze()
-        # green = g.reshape(-1, 1).squeeze()
-        # red = r.reshape(-1, 1).squeeze()
-
-
-        
+      
         # Gray represents the predictive features, X
         gr = self.gray[i - zeta  :  i + zeta + 1, 
                        j - zeta  :  j + zeta + 1]
       
 
-
-        gray = gr.reshape(-1, 1).squeeze() 
-
+        if squeeze: 
+            gray = gr.reshape(-1, 1).squeeze() 
+        else: 
+            gray = gr 
 
         return gray, b, g, r 
