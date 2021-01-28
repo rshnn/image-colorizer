@@ -4,6 +4,30 @@ import os
 
 
 
+def imgs_to_dataset(img_paths, window_size=10, squeeze=True, resize=100, padding=10): 
+    """ 
+    Returns X, y for all images in img_path (list of full path to jpg images)  
+
+    Same parameters as utils.img_to_dataset() 
+    """
+
+
+    X = list()
+    y = list() 
+    
+    for img_path in img_paths: 
+
+        img = Image(img_path, resize=resize, padding=padding)
+        X_, y_ = img_to_dataset(img, window_size=window_size, squeeze=squeeze)
+        
+        X.extend(X_)
+        y.extend(y_)
+        
+    return np.array(X), np.array(y)
+
+
+
+
 def img_to_dataset(img, window_size=10, squeeze=True): 
     """
     Returns X, y for an input image.  Considers input window_size.  
@@ -20,8 +44,10 @@ def img_to_dataset(img, window_size=10, squeeze=True):
     X = list()
     y = list() 
 
-    for i in range(100): 
-        for j in range(100): 
+    l = img.dim  
+
+    for i in range(l): 
+        for j in range(l): 
             
             i_ = i + img.padding
             j_ = j + img.padding
@@ -202,3 +228,8 @@ class Image():
             gray = gr 
 
         return gray, b, g, r 
+
+
+
+
+
