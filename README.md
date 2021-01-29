@@ -1,6 +1,6 @@
 # image-colorizer
 
-Deep neural networks for colorizing grayscale images.  Architectures for consideration include feed-forward multilayer perceptrons and basic convolutional neural networks.  Training was performed on AWS clusters and Google Colab.    
+Deep neural networks for colorizing grayscale images.  Architectures for consideration include feed-forward multilayer perceptrons and basic convolutional neural networks.  Training was performed on AWS clusters and Google Colab.   Hyper-parameter tuning was conducted using Bayesian optimization given a particular model architecture.   
 
 ![cover-gray](images/cover-grayscle.png)  
 ![cover](images/20210121-cnn1-03-banner.png)
