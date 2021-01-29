@@ -11,7 +11,7 @@ This project aims to train a supervised learning model to add color to grayscale
   
 
 The RGB color value of a pixel is predicted using the spatial region surrounding the target pixel.  This is shown in the following image.  Note that the input to our model will be the grayscale values within the zeta-by-zeta window.  The output will be the RBG color value of the target pixel, t.   
-![1](images/window-drawing.png)
+![1](images/window-drawing.PNG)
 
 
 ## Restricting the prediction space with clustering    
